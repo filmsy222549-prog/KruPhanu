@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เลือกให้ถูก แชร์ให้เป็น | IT Cyber Challenge</title>
+    <!-- Google Fonts: Poppins & Sarabun -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --accent-cyan: #06b6d4;
+            --accent-pink: #ec4899;
+            --accent-yellow: #f59e0b;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --font-head: 'Poppins', 'Sarabun', sans-serif;
+            --font-body: 'Sarabun', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ตกแต่งฉากหลังด้วยวงกลมเรืองแสง */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.4;
+        }
+        body::before {
+            background: var(--accent-cyan);
+            top: -100px;
+            left: -100px;
+        }
+        body::after {
+            background: var(--accent-pink);
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border-radius: 28px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.2) inset;
+            width: 100%;
+            max-width: 680px;
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(20px);
+        }
+
+        /* หัวข้อและไอคอน */
+        .screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .screen.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .hero-icon {
+            font-size: 4.5rem;
+            text-align: center;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            text-align: center;
+            background: linear-gradient(90deg, #7c3aed, #db2777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            font-weight: 900;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+        }
+
+        /* กล่องกติกา */
+        .rules-card {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border: 2px dashed #c4b5fd;
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .rules-card h3 {
+            font-family: var(--font-head);
+            color: #6d28d9;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rules-card ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rules-card li {
+            font-size: 0.95rem;
+            color: #4b5563;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ปุ่มกดดีไซน์พรีเมียม */
+        .btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-size: 1.15rem;
+            font-family: var(--font-head);
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.25s ease;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(236, 72, 153, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* แถบหัวข้อเกมด้านบน */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 12px 20px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .badge {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #475569;
+        }
+
+        .badge.score {
+            color: #7c3aed;
+            font-size: 1.1rem;
+        }
+
+        /* หลอดเวลา */
+        .timer-container {
+            width: 100%;
+            background: #e2e8f0;
+            height: 12px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+        }
+
+        .timer-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #06b6d4, #10b981);
+            border-radius: 6px;
+            transition: width 1s linear;
+        }
+
+        /* กล่องคำถาม */
+        .question-box {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 16px;
+            border-left: 5px solid #8b5cf6;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        /* ตัวเลือก */
+        .choices-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .choice-btn {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            color: #334155;
+            padding: 16px 20px;
+            border-radius: 14px;
+            text-align: left;
+            font-size: 1rem;
+            font-family: var(--font-body);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            background: #f5f3ff;
+            border-color: #8b5cf6;
+            transform: translateX(4px);
+        }
+
+        .choice-btn:disabled {
+            cursor: default;
+        }
+
+        .choice-btn.correct {
+            background: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46;
+        }
+
+        .choice-btn.incorrect {
+            background: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b;
+        }
+
+        .status-icon {
+            display: none;
+            font-size: 1.2rem;
+        }
+
+        .choice-btn.correct .status-icon.correct-icon { display: inline; }
+        .choice-btn.incorrect .status-icon.incorrect-icon { display: inline; }
+
+        /* หน้าสรุปผล */
+        .result-container {
+            text-align: center;
+        }
+
+        .trophy-icon {
+            font-size: 5rem;
+            margin-bottom: 10px;
+        }
+
+        .score-display-box {
+            background: linear-gradient(135deg, #f5f3ff 0%, #fbcfe8 100%);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #f472b6;
+        }
+
+        .score-number {
+            font-family: var(--font-head);
+            font-size: 3.8rem;
+            font-weight: 900;
+            color: #db2777;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .score-total {
+            font-size: 1.1rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-card .label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .stat-card .value {
+            font-family: var(--font-head);
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .stat-card .value.green { color: var(--success); }
+        .stat-card .value.red { color: var(--danger); }
+
+        .evaluation-badge {
+            font-family: var(--font-head);
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 10px 24px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 25px;
+            background: #ede9fe;
+            color: #6d28d9;
+            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 1. หน้าแรก -->
+        <div id="start-screen" class="screen active">
+            <div class="hero-icon">💻✨</div>
+            <h1>เลือกให้ถูก แชร์ให้เป็น</h1>
+            <p class="subtitle">Cyber & Digital Citizenship Challenge สำหรับ ม.6</p>
+            
+            <div class="rules-card">
+                <h3>⚡ กติกาความเก่ง</h3>
+                <ul>
+                    <li>🎯 คำถามทั้งหมด 10 ข้อ</li>
+                    <li>⏱️ เวลาจำกัดข้อละ 10 วินาทีเท่านั้น!</li>
+                    <li>🏆 ตอบถูก +5 คะแนน | ตอบผิด 0 คะแนน</li>
+                </ul>
+            </div>
+            
+            <button class="btn" onclick="startGame()">
+                🚀 เริ่มต้นทำภารกิจ
+            </button>
+        </div>
+
+        <!-- 2. หน้าเล่นเกม -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="badge" id="question-counter">
+                    <span>📊</span> ข้อ 1/10
+                </div>
+                <div class="badge score" id="score-display">
+                    ⭐ คะแนน: 0
+                </div>
+            </div>
+            
+            <div class="timer-container">
+                <div id="timer-fill" class="timer-fill"></div>
+            </div>
+            
+            <div id="question-box" class="question-box">
+                กำลังโหลดคำถาม...
+            </div>
+
+            <div id="choices-container" class="choices-grid">
+                <!-- ตัวเลือกสร้างผ่าน JavaScript -->
+            </div>
+        </div>
+
+        <!-- 3. หน้าสรุปผล -->
+        <div id="result-screen" class="screen">
+            <div class="result-container">
+                <div class="trophy-icon" id="result-emoji">🎉</div>
+                <h2 style="font-family: var(--font-head); color: #1e293b; font-size: 2rem; margin-bottom: 5px;">สรุปผลคะแนนภารกิจ</h2>
+                <p style="color: var(--text-muted); margin-bottom: 15px;">คุณได้ผ่านการทดสอบทักษะไอทีเรียบร้อยแล้ว!</p>
+
+                <div class="score-display-box">
+                    <div class="score-number" id="final-score">0</div>
+                    <div class="score-total">จากคะแนนเต็ม 50 คะแนน</div>
+                </div>
+
+                <div id="evaluation-text" class="evaluation-badge">ผลการประเมิน</div>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="label">✅ ตอบถูก</div>
+                        <div class="value green" id="correct-count">0 ข้อ</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="label">❌ ตอบผิด</div>
+                        <div class="value red" id="incorrect-count">0 ข้อ</div>
+                    </div>
+                </div>
+
+                <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px;">
+                    ⏱️ เวลาที่ใช้ทั้งหมด: <b id="total-time" style="color: var(--text-main);">0 นาที 0 วินาที</b>
+                </p>
+
+                <button class="btn" onclick="startGame()">
+                    🔄 เล่นท้าทายอีกรอบ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "📢 โรงเรียนต้องการประชาสัมพันธ์กิจกรรมวันวิทยาศาสตร์ให้นักเรียน ม.6 จำนวนมากทราบ ควรเลือกวิธีใดเหมาะสมที่สุด?",
+                choices: [
+                    "ก. เก็บข้อมูลไว้ในเครื่องตนเอง",
+                    "ข. ส่งข้อความให้เพื่อนเพียงคนเดียว",
+                    "ค. จัดทำอินโฟกราฟิกและเผยแพร่ผ่านช่องทางของโรงเรียน",
+                    "ง. ไม่ต้องนำเสนอข้อมูล"
+                ],
+                answer: 2
+            },
+            {
+                q: "💻 นักเรียนต้องนำเสนอผลการทำโครงงานหน้าชั้นเรียน โดยมีทั้งข้อความ รูปภาพ และข้อมูลสถิติ ควรเลือกใช้เครื่องมือใด?",
+                choices: [
+                    "ก. โปรแกรมนำเสนอ",
+                    "ข. เครื่องคิดเลข",
+                    "ค. โปรแกรมบันทึกเสียงอย่างเดียว",
+                    "ง. โปรแกรมจัดการไฟล์"
+                ],
+                answer: 0
+            },
+            {
+                q: "📊 ถ้านักเรียนต้องการนำเสนอข้อมูลสถิติของนักเรียนจำนวน 500 คนให้เข้าใจง่ายและรวดเร็ว ควรใช้รูปแบบใด?",
+                choices: [
+                    "ก. ข้อความยาวหลายหน้า",
+                    "ข. อินโฟกราฟิกหรือกราฟ",
+                    "ค. ส่งข้อมูลให้เพื่อนทีละคน",
+                    "ง. เก็บข้อมูลไว้โดยไม่เผยแพร่"
+                ],
+                answer: 1
+            },
+            {
+                q: "📱 นักเรียนต้องการแบ่งปันเอกสารการเรียนให้เฉพาะสมาชิกในห้องเรียน ควรเลือกวิธีใด?",
+                choices: [
+                    "ก. โพสต์แบบสาธารณะให้ทุกคนเห็น",
+                    "ข. ส่งให้คนที่ไม่เกี่ยวข้อง",
+                    "ค. ใช้ช่องทางออนไลน์ที่จำกัดเฉพาะสมาชิกในห้อง",
+                    "ง. เผยแพร่ข้อมูลโดยไม่กำหนดผู้เข้าถึง"
+                ],
+                answer: 2
+            },
+            {
+                q: "🔎 ก่อนนำข้อมูลจากเว็บไซต์มาใช้ในการนำเสนอ นักเรียนควรทำสิ่งใดก่อน?",
+                choices: [
+                    "ก. คัดลอกข้อมูลทันที",
+                    "ข. ตรวจสอบความถูกต้องและแหล่งที่มาของข้อมูล",
+                    "ค. ลบชื่อผู้จัดทำข้อมูลออก",
+                    "ง. เปลี่ยนข้อมูลให้ตรงกับความต้องการของตนเอง"
+                ],
+                answer: 1
+            },
+            {
+                q: "🎯 หากต้องนำเสนอข้อมูลให้กับนักเรียนระดับมัธยมศึกษาตอนปลาย สิ่งใดควรพิจารณาเป็นสำคัญ?",
+                choices: [
+                    "ก. จำนวนข้อมูลต้องมากที่สุด",
+                    "ข. ความเหมาะสมของเนื้อหาและกลุ่มเป้าหมาย",
+                    "ค. ใช้รูปแบบเดียวกับทุกกลุ่ม",
+                    "ง. ใช้ข้อความให้มากที่สุด"
+                ],
+                answer: 1
+            },
+            {
+                q: "⚠️ นักเรียนได้รับข้อความว่า “พรุ่งนี้โรงเรียนหยุดเรียน” จากเพื่อน แต่ยังไม่มีประกาศจากโรงเรียน นักเรียนควรทำอย่างไร?",
+                choices: [
+                    "ก. แชร์ต่อทันที",
+                    "ข. เปลี่ยนข้อความแล้วแชร์",
+                    "ค. ตรวจสอบข้อมูลจากแหล่งที่น่าเชื่อถือก่อน",
+                    "ง. ส่งต่อให้คนอื่นช่วยแชร์"
+                ],
+                answer: 2
+            },
+            {
+                q: "🔐 ข้อใดเป็นการแบ่งปันข้อมูลที่เหมาะสมที่สุด?",
+                choices: [
+                    "ก. นำข้อมูลส่วนตัวของเพื่อนมาโพสต์โดยไม่ขออนุญาต",
+                    "ข. แชร์ข้อมูลที่ยังไม่ทราบแหล่งที่มา",
+                    "ค. เผยแพร่ผลงานของตนเองผ่านช่องทางที่เหมาะสม",
+                    "ง. ส่งข้อมูลส่วนตัวของผู้อื่นให้บุคคลทั่วไป"
+                ],
+                answer: 2
+            },
+            {
+                q: "📣 ข้อใดแสดงถึงการนำเสนอข้อมูลที่มีประสิทธิภาพมากที่สุด?",
+                choices: [
+                    "ก. ใช้ข้อมูลจำนวนมากโดยไม่จัดลำดับ",
+                    "ข. ใช้ข้อความที่ซับซ้อนและยาวที่สุด",
+                    "ค. นำเสนอข้อมูลถูกต้อง ชัดเจน และเหมาะสมกับผู้รับสาร",
+                    "ง. ใช้ภาพจำนวนมากโดยไม่เกี่ยวข้องกับเนื้อหา"
+                ],
+                answer: 2
+            },
+            {
+                q: "🚨 นักเรียนพบข้อมูลข่าวสารบนสื่อออนไลน์และต้องการนำไปเผยแพร่ต่อ ข้อใดควรพิจารณาก่อนเผยแพร่?",
+                choices: [
+                    "ก. จำนวนคนที่กดถูกใจ",
+                    "ข. ความสวยงามของโพสต์",
+                    "ค. ความถูกต้อง ความน่าเชื่อถือ และความเหมาะสมของข้อมูล",
+                    "ง. จำนวนครั้งที่มีคนแชร์"
+                ],
+                answer: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let timer;
+        let timeLeft = 10;
+        let gameStartTime;
+
+        function startGame() {
+            currentQuestion = 0;
+            score = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            gameStartTime = new Date();
+            
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            clearInterval(timer);
+            if (currentQuestion >= questions.length) {
+                endGame();
+                return;
+            }
+
+            timeLeft = 10;
+            document.getElementById('timer-fill').style.width = '100%';
+            
+            const qData = questions[currentQuestion];
+            document.getElementById('question-counter').innerHTML = `<span>📊</span> ข้อ ${currentQuestion + 1}/${questions.length}`;
+            document.getElementById('score-display').innerHTML = `⭐ คะแนน: ${score}`;
+            document.getElementById('question-box').innerText = qData.q;
+
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.innerHTML = '';
+
+            qData.choices.forEach((choice, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.innerHTML = `<span>${choice}</span><div><span class="status-icon correct-icon">✅</span><span class="status-icon incorrect-icon">❌</span></div>`;
+                btn.onclick = () => selectAnswer(index);
+                choicesContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            const timerFill = document.getElementById('timer-fill');
+            timer = setInterval(() => {
+                timeLeft--;
+                timerFill.style.width = `${(timeLeft / 10) * 100}%`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    incorrectCount++;
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function selectAnswer(selectedIndex) {
+            clearInterval(timer);
+            const qData = questions[currentQuestion];
+            const buttons = document.querySelectorAll('.choice-btn');
+
+            buttons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === qData.answer) {
+                buttons[selectedIndex].classList.add('correct');
+                score += 5;
+                correctCount++;
+            } else {
+                buttons[selectedIndex].classList.add('incorrect');
+                buttons[qData.answer].classList.add('correct');
+                incorrectCount++;
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+                loadQuestion();
+            }, 1200);
+        }
+
+        function handleTimeout() {
+            const qData = questions[currentQuestion];
+            const buttons = document.querySelectorAll('.choice-btn');
+            
+            buttons.forEach(btn => btn.disabled = true);
+            buttons[qData.answer].classList.add('correct');
+
+            setTimeout(() => {
+                currentQuestion++;
+                loadQuestion();
+            }, 1200);
+        }
+
+        function endGame() {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+
+            const endTime = new Date();
+            const totalTimeSpent = Math.floor((endTime - gameStartTime) / 1000);
+            const minutes = Math.floor(totalTimeSpent / 60);
+            const seconds = totalTimeSpent % 60;
+
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('correct-count').innerText = `${correctCount} ข้อ`;
+            document.getElementById('incorrect-count').innerText = `${incorrectCount} ข้อ`;
+            document.getElementById('total-time').innerText = `${minutes} นาที ${seconds} วินาที`;
+
+            let evaluation = "";
+            let emoji = "🎉";
+            if (score >= 40) { evaluation = "🥇 ดีมาก (ยอดเยี่ยม)"; emoji = "👑"; }
+            else if (score >= 30) { evaluation = "🥈 ดี (เก่งมาก)"; emoji = "🚀"; }
+            else if (score >= 20) { evaluation = "🥉 พอใช้ (พยายามอีกนิด)"; emoji = "💡"; }
+            else { evaluation = "🔄 ควรทบทวนความรู้"; emoji = "📚"; }
+
+            document.getElementById('evaluation-text').innerText = evaluation;
+            document.getElementById('result-emoji').innerText = emoji;
+        }
+    </script>
+</body>
+</html>
